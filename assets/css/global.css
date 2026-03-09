@@ -1,0 +1,17 @@
+html,
+body,
+button {
+  background-color: #000000;
+  font-family: "Milo";
+  -webkit-font-smoothing: antialiased; /* for macOS Safari/Chrome */
+  -moz-osx-font-smoothing: grayscale; /* for Firefox on macOS */
+}
+
+p {
+  margin: 0;
+}
+
+@font-face {
+  font-family: Milo;
+  src: url("public/fonts/MiloSerifW05-Regular.woff2");
+}

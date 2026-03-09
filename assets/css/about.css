@@ -1,0 +1,100 @@
+.about-bio p {
+  line-height: 22px;
+  color: white;
+  font-size: 18px;
+}
+
+.about-bio {
+  padding-left: 170px;
+  padding-right: 30vw;
+  position: fixed;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.about-link {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+}
+
+.about-link:hover {
+  color: #5d5d5d;
+}
+
+.site-credit {
+  padding-left: 170px;
+  position: fixed;
+  padding-bottom: 20px;
+  bottom: 0;
+  z-index: 1000;
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.2px;
+  color: white;
+}
+
+.scroll-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: black;
+}
+
+.scroll-track {
+  display: flex;
+  flex-direction: column;
+  animation: scroll 200s linear infinite;
+  will-change: transform;
+}
+
+.scroll-item {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.scroll-item img.cover,
+.scroll-item video.cover {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  display: block;
+}
+
+.scroll-item img.tall,
+.scroll-item video.tall {
+  width: auto;
+  height: 100vh;
+  max-width: none;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 1180px) {
+  .about-bio {
+    padding-left: 16px;
+    padding-right: 30px;
+  }
+
+  .site-credit {
+    padding-left: 16px;
+  }
+}
+
+/* Adjust scroll speed as needed */
+@keyframes scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}

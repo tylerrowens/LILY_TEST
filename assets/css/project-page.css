@@ -1,0 +1,336 @@
+.project-info {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; /* or width: 100vw */
+  bottom: 0; /* or height: 100vh */
+
+  padding-left: 170px;
+  padding-right: 30vw;
+
+  display: flex;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.8); /* better than opacity */
+  color: white;
+  font-size: 18px;
+  line-height: 22px;
+  opacity: 0.85;
+  z-index: 1000;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s linear;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.info-enter-active,
+.info-leave-active {
+  transition: opacity 0.5s linear;
+}
+
+.info-enter-from,
+.info-leave-to {
+  opacity: 0;
+}
+
+.info-enter-to,
+.info-leave-from {
+  opacity: 0.85;
+}
+
+.sound-button {
+  position: fixed;
+  pointer-events: auto;
+  background: none;
+  color: white;
+  appearance: none;
+  border: none;
+  font-size: 16px;
+  text-transform: uppercase;
+  bottom: 0;
+  padding-bottom: 20px;
+  right: 170px;
+  z-index: 100;
+
+  width: 100px; /* pick a width that fits "SOUND OFF" */
+  text-align: left;
+}
+
+.sound-button:hover {
+  color: #5d5d5d;
+}
+
+.thumbnailContainer {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+  gap: 7px;
+  top: 0px;
+  right: 0px;
+  padding-top: 20px;
+  padding-right: 20px;
+  z-index: 10000;
+}
+
+.thumbnail {
+  height: auto;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Ensures no overflow */
+}
+
+.thumbnail img,
+.thumbnail video {
+  height: auto;
+  width: 100%;
+  opacity: 40%;
+  object-fit: contain; /* Ensures full image fits without cropping */
+}
+
+/* base hidden state for thumbnails */
+.thumb-fade-item {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+/* when ready, staggered fade-in */
+.thumb-fade-item.thumb-fade-ready {
+  animation: thumbFadeIn 0.35s ease forwards;
+  animation-delay: var(--thumb-delay, 0ms);
+}
+
+@keyframes thumbFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.gallery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+}
+
+.gallery img,
+.gallery video {
+  max-width: 30vw;
+  max-height: 80vh;
+  min-width: 300px;
+  object-fit: contain;
+}
+
+.gallery.fullscreen img,
+.gallery.fullscreen video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  min-width: 0;
+  object-fit: cover;
+}
+
+.gallery.centered img,
+.gallery.centered video {
+  max-width: 60vw;
+  max-height: 60vh;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+.gallery.tallCentered img,
+.gallery.tallCentered video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 100vh;
+  width: auto;
+
+  max-height: none;
+  max-width: none;
+
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+}
+
+.click-left,
+.click-right {
+  position: absolute;
+  top: 10%; /* Avoids header */
+  bottom: 10%; /* Avoids footer */
+  width: 30%;
+  height: 80%;
+  cursor: pointer;
+}
+
+.click-left {
+  left: 10%;
+}
+
+.click-right {
+  right: 10%;
+}
+
+.thumbnail.active img {
+  opacity: 1; /* Fully visible when active */
+}
+
+.next-project-slide {
+  color: white;
+  text-transform: uppercase;
+  font-size: 50px;
+  line-height: 55px;
+  text-align: center;
+}
+
+.prev-project-slide {
+  color: white;
+  text-transform: uppercase;
+  font-size: 50px;
+  line-height: 55px;
+  text-align: center;
+}
+
+.typewriter-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  text-align: center;
+  min-height: 200px; /* or whatever gives you breathing room */
+}
+
+/* Base state */
+.thumbnail img,
+.thumbnail video {
+  opacity: 0.3;
+  transition: opacity 0.25s ease;
+}
+
+/* Hover (only if NOT active) */
+.thumbnail:not(.active):hover img,
+.thumbnail:not(.active):hover video {
+  opacity: 1;
+}
+
+/* Active (current slide) */
+.thumbnail.active img,
+.thumbnail.active video {
+  opacity: 1;
+}
+
+.type-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 1em; /* ensures layout doesn't shift when animating */
+}
+
+.word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.word-space {
+  margin-right: 0.1em;
+}
+
+.letter {
+  opacity: 0;
+  transition: opacity 0s ease;
+  display: inline-block;
+}
+
+.letter.visible {
+  opacity: 1;
+}
+
+.project-video::-webkit-media-controls {
+  display: none !important;
+}
+
+.project-video {
+  pointer-events: none; /* prevents tap-to-pause */
+}
+
+@media (max-width: 1180px) {
+  .next-project-slide {
+    color: white;
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 55px;
+    text-align: center;
+  }
+
+  .prev-project-slide {
+    color: white;
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 55px;
+    text-align: center;
+  }
+
+  .sound-button {
+    left: 50%;
+    right: auto;
+    width: max-content; /* or just remove width entirely */
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .project-info {
+    padding-left: 16px;
+    font-size: 18px;
+    z-index: 10000;
+  }
+
+  @media (max-width: 767px) {
+    .sound-button {
+      font-size: 10px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .typewriter-block {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .type-line {
+    font-size: 15px;
+    line-height: 25px;
+  }
+
+  .word {
+    margin-right: 0px;
+  }
+
+  .gallery.tallCentered img,
+  .gallery.tallCentered video {
+    width: 100vw;
+    height: auto;
+  }
+}
