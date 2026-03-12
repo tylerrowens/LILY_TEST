@@ -1,3 +1,10 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .project-info {
   position: fixed;
   top: 0;
@@ -13,8 +20,9 @@
 
   background: rgba(0, 0, 0, 0.8); /* better than opacity */
   color: white;
-  font-size: 18px;
-  line-height: 22px;
+  font-size: 16px;
+  line-height: 21px;
+  letter-spacing: 0.05px;
   opacity: 0.85;
   z-index: 1000;
 }
@@ -31,7 +39,7 @@
 
 .info-enter-active,
 .info-leave-active {
-  transition: opacity 0.5s linear;
+  transition: opacity 350ms linear;
 }
 
 .info-enter-from,
@@ -62,7 +70,8 @@
   text-align: left;
 }
 
-.sound-button:hover {
+.sound-button:hover,
+.sound-button.active {
   color: #5d5d5d;
 }
 
@@ -105,7 +114,7 @@
 
 /* when ready, staggered fade-in */
 .thumb-fade-item.thumb-fade-ready {
-  animation: thumbFadeIn 0.35s ease forwards;
+  animation: thumbFadeIn 350ms ease forwards;
   animation-delay: var(--thumb-delay, 0ms);
 }
 
@@ -122,16 +131,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100dvh;
   position: relative;
-}
-
-.gallery img,
-.gallery video {
-  max-width: 30vw;
-  max-height: 80vh;
-  min-width: 300px;
-  object-fit: contain;
+  overflow: hidden;
 }
 
 .gallery.fullscreen img,
@@ -140,7 +142,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   max-width: none;
   max-height: none;
   min-width: 0;
@@ -150,10 +152,7 @@
 .gallery.centered img,
 .gallery.centered video {
   max-width: 60vw;
-  max-height: 60vh;
-  display: block;
-  margin: 0 auto;
-  object-fit: contain;
+  max-height: 60dvh;
 }
 
 .gallery.tallCentered img,
@@ -161,7 +160,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 100vh;
+  height: 100%;
   width: auto;
 
   max-height: none;
@@ -223,7 +222,7 @@
 .thumbnail img,
 .thumbnail video {
   opacity: 0.3;
-  transition: opacity 0.25s ease;
+  transition: opacity 20ms ease;
 }
 
 /* Hover (only if NOT active) */
@@ -292,10 +291,11 @@
   .sound-button {
     left: 50%;
     right: auto;
-    width: max-content; /* or just remove width entirely */
+    width: 80px;
     transform: translateX(-50%);
     text-align: center;
     font-size: 16px;
+    white-space: nowrap;
   }
 
   .project-info {
@@ -330,7 +330,11 @@
 
   .gallery.tallCentered img,
   .gallery.tallCentered video {
-    width: 100vw;
+    width: 100%;
     height: auto;
+  }
+
+  .project-info {
+    padding-right: 12px;
   }
 }

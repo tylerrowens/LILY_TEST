@@ -19,21 +19,7 @@
       :style="{ visibility: hideInfoButton ? 'hidden' : 'visible' }"
       @click="toggleInfo"
     >
-      <svg
-        class="icon"
-        width="14"
-        height="14"
-        viewBox="0 0 14 14"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M7 1L7 13M13 7L1 7"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-      </svg>
+    +
     </div>
     <div class="time" :style="{ visibility: hideTime ? 'hidden' : 'visible' }">
       {{ time }}

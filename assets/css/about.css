@@ -1,7 +1,9 @@
 .about-bio p {
   line-height: 22px;
   color: white;
-  font-size: 18px;
+  font-size: 16px;
+  letter-spacing: 0.05px;
+  line-height: 21px;
 }
 
 .about-bio {
@@ -68,6 +70,9 @@
   object-fit: cover;
   display: block;
 }
+.mobile-break {
+  display: none;
+}
 
 .scroll-item img.tall,
 .scroll-item video.tall {
@@ -84,8 +89,18 @@
     padding-right: 30px;
   }
 
+  .mobile-break {
+    display: none;
+  }
+
   .site-credit {
     padding-left: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .mobile-break {
+    display: inline;
   }
 }
 

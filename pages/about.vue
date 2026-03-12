@@ -1,7 +1,8 @@
 <template>
   <div class="about-bio">
     <p>
-      SE London based Art Director and Production Designer <br />
+      SE London based Art Director and <br class="mobile-break" />
+      Production Designer <br />
       <a class="about-link" href="mailto:Lily.purbrick@gmail.com"> Contact </a>
       <br /><NuxtLink
         class="about-link"

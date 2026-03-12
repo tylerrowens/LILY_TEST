@@ -1,6 +1,7 @@
 <template>
   <button
     class="sound-button"
+    :class="{ active: !isMuted }"
     v-if="activeSlide?.kind === 'video'"
     type="button"
     @click.stop="toggleSound"
