@@ -45,19 +45,15 @@
   text-decoration: none;
 }
 
-.more.nav-link {
-  display: inline-block;
-  line-height: 1;
-  transform: scale(1.6);
-}
-
 .more {
   color: white;
   cursor: pointer;
   user-select: none;
-  place-items: center;
   display: grid;
-  justify-self: center;
+  place-items: center;
+  font-size: 23px;
+  line-height: 19.3px;
+  transform: scale(1);
 }
 
 .name,
@@ -106,7 +102,7 @@
     grid-column: 1 / 2; /* top left */
     grid-row: 2 / 2;
     padding-left: 16px;
-    font-size: 15px;
+    font-size: 15.3px;
     align-self: end;
   }
 
@@ -123,9 +119,9 @@
   .more {
     grid-column: 2 / 3;
     grid-row: 2 / 3;
-    justify-self: end;
+    justify-self: right;
     align-self: end;
-    padding-right: 16px;
+    padding-right: 12px;
   }
 
   @media (max-width: 767px) {
@@ -135,6 +131,7 @@
     .projectName,
     .time {
       font-size: 10px;
+      line-height: 14px;
       letter-spacing: 0.5px;
     }
   }
