@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <template v-if="heroVisible && activeItem?.mediaUrl">
+    <template
+      v-if="heroVisible && (activeItem?.mediaUrl || activeItem?.vimeoId)"
+    >
       <img
         v-if="activeItem.mediaType?.toLowerCase?.() === 'image'"
         :key="`image:${activeItem.mediaUrl}`"
@@ -8,17 +10,14 @@
         :class="activeItem.resolvedLayoutOption"
       />
 
-      <video
+      <iframe
         v-else-if="activeItem.mediaType?.toLowerCase?.() === 'video'"
-        :key="`video:${activeItem.mediaUrl}`"
-        :src="activeItem.mediaUrl"
+        :key="`video:${activeItem.vimeoId}`"
+        :src="vimeoEmbedUrl(activeItem.vimeoId)"
         :class="[activeItem.resolvedLayoutOption, { 'is-ready': activeReady }]"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        @loadeddata="onVideoReady"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        loading="lazy"
       />
 
       <!-- Fallback: if mediaType is missing/odd, still show something -->
@@ -45,38 +44,43 @@ definePageMeta({
   hideInfoButton: true,
 });
 
+const vimeoEmbedUrl = (id) => {
+  const params = new URLSearchParams({
+    background: "1",
+    autopause: "0",
+    byline: "0",
+    title: "0",
+    portrait: "0",
+    muted: "1",
+    loop: "1",
+    autoplay: "1",
+    dnt: "1",
+  });
+
+  return `https://player.vimeo.com/video/${id}?${params.toString()}`;
+};
+
 const { client } = useSanity();
 
 const { data } = await useAsyncData("homepageImages", () => {
   const query = /* groq */ `
-  *[_type == "homePage"][0]{
-    featuredProjects[]->{
-      _id,
-      title,
-      slug,
-      "mediaType": select(defined(mainMedia.videoUrl) => "video", "image"),
-      "mediaUrl": coalesce(
-        mainMedia.image.asset->url,
-        mainImage.asset->url,
-        mainMedia.videoUrl
-      ),
-      "resolvedLayoutOption": coalesce(mainMedia.layoutOption, "fullscreen")
-    }
+*[_type == "homePage"][0]{
+  featuredProjects[]->{
+    _id,
+    title,
+    slug,
+    "mediaType": select(defined(mainMedia.vimeoId) => "video", "image"),
+    "mediaUrl": coalesce(
+      mainMedia.image.asset->url,
+      mainImage.asset->url
+    ),
+    "vimeoId": mainMedia.vimeoId,
+    "resolvedLayoutOption": coalesce(mainMedia.layoutOption, "fullscreen")
   }
+}
 `;
   return client.fetch(query);
 });
-
-// helper: turn mainMedia into what your template expects
-const normalize = (p) => {
-  const mm = p?.mainMedia || {};
-  return {
-    ...p,
-    mediaType: mm.mediaType,
-    mediaUrl: mm.mediaUrl, // adjust if your URL lives elsewhere
-    resolvedLayoutOption: mm.layoutOption || "fullscreen",
-  };
-};
 
 const posts = computed(() => data.value?.featuredProjects || []);
 
@@ -98,14 +102,10 @@ const activeReady = ref(true);
 watch(
   activeItem,
   () => {
-    activeReady.value = activeItem.value.mediaType === "image";
+    activeReady.value = true;
   },
   { immediate: true }
 );
-
-const onVideoReady = () => {
-  activeReady.value = true;
-};
 
 const nextImage = () => {
   if (!posts.value.length) return;

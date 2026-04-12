@@ -15,13 +15,11 @@
         @mouseleave="hoveredIndex = null"
       >
         <template v-if="item.kind === 'video'">
-          <video
-            :src="item.videoUrl"
-            muted
-            autoplay
-            loop
-            playsinline
-            preload="metadata"
+          <iframe
+            :src="vimeoEmbedUrl(item.vimeoId)"
+            frameborder="0"
+            allow="autoplay; fullscreen"
+            loading="lazy"
           />
         </template>
 
@@ -59,6 +57,22 @@
 import { ref, computed, onMounted, inject, watch } from "vue";
 import { useAsyncData } from "#imports";
 
+const vimeoEmbedUrl = (id) => {
+  const params = new URLSearchParams({
+    background: "1",
+    autopause: "0",
+    byline: "0",
+    title: "0",
+    portrait: "0",
+    muted: "1",
+    loop: "1",
+    autoplay: "1",
+    dnt: "1",
+  });
+
+  return `https://player.vimeo.com/video/${id}?${params.toString()}`;
+};
+
 // === Page Meta ===
 // Hides footer elements specific to this page
 definePageMeta({
@@ -69,15 +83,15 @@ definePageMeta({
 // === Sanity Image Fetch ===
 const { data } = await useAsyncData("postImages", async () => {
   const query = `*[_type == "projectsGrid"][0]{
-    items[]->{
-     title,
-  slug,
-  category,
-  "kind": coalesce(mainMedia.kind, "image"),
-  "imageUrl": coalesce(mainMedia.image.asset->url, mainImage.asset->url),
-  "videoUrl": mainMedia.videoUrl
-    }
-  }`;
+  items[]->{
+    title,
+    slug,
+    category,
+    "kind": coalesce(mainMedia.kind, "image"),
+    "imageUrl": coalesce(mainMedia.image.asset->url, mainImage.asset->url),
+    "vimeoId": mainMedia.vimeoId
+  }
+}`;
 
   const { data: sanityData } = await useSanityQuery(query);
 
@@ -86,7 +100,7 @@ const { data } = await useAsyncData("postImages", async () => {
 });
 
 // === Reactive State ===
-const posts = ref(data.value); // All fetched posts
+const posts = ref(data.value || []);
 const hasInteracted = ref(false); // Currently selected category (null = 'all')
 const activeCategory = ref(null); // Tracks if user has clicked a filter
 const hoveredIndex = ref(null); // Tracks which image is currently hovered

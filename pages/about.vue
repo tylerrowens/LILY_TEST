@@ -16,29 +16,25 @@
   </div>
   <div class="scroll-container">
     <div class="scroll-track" v-if="scrollItems.length">
-      <!-- pass 1 -->
       <div
         v-for="(item, index) in scrollItems"
         :key="`a-${item._key || index}`"
         class="scroll-item"
       >
         <template v-if="item.kind === 'video'">
-          <video
-            :src="item.videoUrl"
-            :class="item.layoutOption"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          />
+          <div class="vimeo-frame" :class="item.layoutOption">
+            <iframe
+              :src="vimeoEmbedUrl(item.vimeoId)"
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+            />
+          </div>
         </template>
         <template v-else>
           <img :src="item.imageUrl" :class="item.layoutOption" alt="" />
         </template>
       </div>
 
-      <!-- pass 2 -->
       <div
         v-for="(item, index) in scrollItems"
         :key="`b-${item._key || index}`"
@@ -46,15 +42,13 @@
         aria-hidden="true"
       >
         <template v-if="item.kind === 'video'">
-          <video
-            :src="item.videoUrl"
-            :class="item.layoutOption"
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          />
+          <div class="vimeo-frame" :class="item.layoutOption">
+            <iframe
+              :src="vimeoEmbedUrl(item.vimeoId)"
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+            />
+          </div>
         </template>
         <template v-else>
           <img :src="item.imageUrl" :class="item.layoutOption" alt="" />
@@ -77,12 +71,28 @@ definePageMeta({
 const builder = imageUrlBuilder(client);
 const imageUrl = (image) => builder.image(image).fit("crop").url();
 
+const vimeoEmbedUrl = (id) => {
+  const params = new URLSearchParams({
+    background: "1",
+    autopause: "0",
+    byline: "0",
+    title: "0",
+    portrait: "0",
+    muted: "1",
+    loop: "1",
+    autoplay: "1",
+    dnt: "1",
+  });
+
+  return `https://player.vimeo.com/video/${id}?${params.toString()}`;
+};
+
 const query = `*[_type == "about"][0]{
   media[]{
     _key,
     kind,
     layoutOption,
-    videoUrl,
+    vimeoId,
     image{
       asset->{ _id, url },
       crop,
@@ -104,7 +114,7 @@ const scrollItems = computed(() => {
         return {
           _key: m._key,
           kind: "video",
-          videoUrl: m.videoUrl,
+          vimeoId: m.vimeoId,
           layoutOption: m.layoutOption || "cover",
         };
       }

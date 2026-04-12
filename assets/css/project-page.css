@@ -102,7 +102,8 @@ body {
 }
 
 .thumbnail img,
-.thumbnail video {
+.thumbnail video,
+.thumbnail iframe {
   height: auto;
   width: 100%;
   opacity: 40%;
@@ -140,7 +141,8 @@ body {
 }
 
 .gallery.fullscreen img,
-.gallery.fullscreen video {
+.gallery.fullscreen video,
+.gallery.fullscreen iframe {
   position: absolute;
   top: 0;
   left: 0;
@@ -153,13 +155,15 @@ body {
 }
 
 .gallery.centered img,
-.gallery.centered video {
+.gallery.centered video,
+.gallery.centered iframe {
   max-width: 60vw;
   max-height: 60dvh;
 }
 
 .gallery.tallCentered img,
-.gallery.tallCentered video {
+.gallery.tallCentered video,
+.gallery.tallCentered iframe {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -222,20 +226,24 @@ body {
 
 /* Base state */
 .thumbnail img,
-.thumbnail video {
+.thumbnail video,
+.thumbnail iframe
+ {
   opacity: 0.3;
   transition: opacity 20ms ease;
 }
 
 /* Hover (only if NOT active) */
 .thumbnail:not(.active):hover img,
-.thumbnail:not(.active):hover video {
+.thumbnail:not(.active):hover video,
+.thumbnail:not(.active):hover iframe {
   opacity: 1;
 }
 
 /* Active (current slide) */
 .thumbnail.active img,
-.thumbnail.active video {
+.thumbnail.active video,
+.thumbnail.active iframe {
   opacity: 1;
 }
 
@@ -337,7 +345,8 @@ body {
   }
 
   .gallery.tallCentered img,
-  .gallery.tallCentered video {
+  .gallery.tallCentered video,
+  .gallery.tallCentered iframe {
     width: 100%;
     height: auto;
   }

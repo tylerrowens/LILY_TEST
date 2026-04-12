@@ -32,21 +32,7 @@ body {
 }
 
 .grid-fade-item {
-  opacity: 0;
-}
-
-.grid-fade-item.grid-fade-ready {
-  animation: gridFadeIn 50ms ease forwards;
-  animation-delay: var(--delay, 0ms);
-}
-
-@keyframes gridFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  opacity: 1;
 }
 
 .category::after {
@@ -100,6 +86,7 @@ body {
   overflow: initial;
   position: relative;
 }
+
 .main-grid-container {
   display: grid;
   grid-template-columns: repeat(8, 1fr); /* row-gap: 2rem; */
@@ -117,7 +104,8 @@ body {
 }
 
 .media img,
-.media video {
+.media video,
+.media iframe {
   height: auto;
   width: 45%;
   max-width: 100%;

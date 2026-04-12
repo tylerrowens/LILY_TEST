@@ -78,15 +78,13 @@
     </template>
 
     <template v-else-if="activeSlide.kind === 'video'">
-      <video
-        :key="`video-${activeSlide.videoUrl}`"
-        ref="videoEl"
-        :src="activeSlide.videoUrl"
-        autoplay
-        :muted="isMuted"
-        loop
-        playsinline
-        preload="auto"
+      <iframe
+        :key="`video-${activeSlide.vimeoId}`"
+        ref="vimeoIframe"
+        :src="vimeoEmbedUrl(activeSlide.vimeoId)"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
       />
     </template>
 
@@ -122,8 +120,9 @@
       @click="currentIndex = index + 1"
     >
       <template v-if="item.kind === 'video'">
-        <video :src="item.videoUrl" muted playsinline preload="metadata" />
+        <img :src="vimeoThumbnail(item.vimeoId)" alt="" />
       </template>
+
       <template v-else>
         <img :src="imageUrl(item.image)" />
       </template>
@@ -161,9 +160,29 @@ import client from "~/utils/sanityClient";
 import imageUrlBuilder from "@sanity/image-url";
 import { ref as vueRef } from "vue";
 import { gsap } from "gsap";
+import Player from "@vimeo/player";
+
 const builder = imageUrlBuilder(client);
 
 const imageUrl = (image) => builder.image(image).fit("crop").url();
+
+const vimeoEmbedUrl = (id, muted = true) => {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    loop: "1",
+    muted: muted ? "1" : "0",
+    background: "1",
+    title: "0",
+    byline: "0",
+    portrait: "0",
+    controls: "0",
+    dnt: "1",
+  });
+
+  return `https://player.vimeo.com/video/${id}?${params.toString()}`;
+};
+
+const vimeoThumbnail = (id) => `https://vumbnail.com/${id}.jpg`;
 
 const router = useRouter();
 const projects = ref([]);
@@ -174,10 +193,9 @@ const thumbnailsReady = ref(false);
 
 const hideFooter = useState("hide-footer", () => false);
 
-const videoEl = ref(null);
-const videoVisible = ref(false);
+const vimeoIframe = ref(null);
 const isMuted = ref(true);
-let observer;
+let vimeoPlayer = null;
 
 watch(
   () => route.fullPath,
@@ -356,15 +374,19 @@ const prevImage = () => {
   }
 };
 
-function toggleSound() {
+async function toggleSound() {
   isMuted.value = !isMuted.value;
 
-  const v = videoEl.value;
-  if (!v) return;
+  if (!vimeoPlayer) return;
 
-  if (!isMuted.value) {
-    v.volume = 1;
-    v.play().catch(() => {});
+  try {
+    await vimeoPlayer.setMuted(isMuted.value);
+
+    if (!isMuted.value) {
+      await vimeoPlayer.setVolume(1);
+    }
+  } catch (error) {
+    console.error("Failed to toggle Vimeo sound:", error);
   }
 }
 
@@ -410,44 +432,36 @@ onMounted(() => {
   }
 });
 
-const setupObserver = () => {
-  if (observer) return;
-
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      videoVisible.value = entry.isIntersecting;
-    },
-    { threshold: 0.4 }
-  );
-};
-
 watch(
-  () => activeSlide.value?.kind,
-  async (kind) => {
-    videoVisible.value = false;
+  () => activeSlide.value,
+  async (slide) => {
+    if (vimeoPlayer) {
+      vimeoPlayer.destroy();
+      vimeoPlayer = null;
+    }
 
-    // stop observing old video (if any)
-    if (observer && videoEl.value) observer.unobserve(videoEl.value);
+    if (slide?.kind !== "video") return;
 
-    if (kind !== "video") return;
-
-    // wait until the <video> actually renders
     await nextTick();
 
-    if (!videoEl.value) return;
+    if (!vimeoIframe.value) return;
 
-    setupObserver();
-    observer.observe(videoEl.value);
+    vimeoPlayer = new Player(vimeoIframe.value);
 
-    // keep the element in sync with state
-    videoEl.value.muted = isMuted.value;
+    try {
+      await vimeoPlayer.setMuted(isMuted.value);
+      await vimeoPlayer.play();
+    } catch (error) {
+      console.error("Failed to initialize Vimeo player:", error);
+    }
   },
   { immediate: true }
 );
 
 onBeforeUnmount(() => {
-  if (observer && videoEl.value) {
-    observer.unobserve(videoEl.value);
+  if (vimeoPlayer) {
+    vimeoPlayer.destroy();
+    vimeoPlayer = null;
   }
 });
 </script>
